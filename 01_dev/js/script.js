@@ -4,7 +4,7 @@
     // Delete no-js class name
     while (noJs.length > 0) { noJs[0].classList.remove('no-js'); }
 
-    var countries = {
+    const countries = {
         AF: 'Afghanistan',
         AX: 'Aland Islands',
         AL: 'Albania',
@@ -252,32 +252,33 @@
         ZW: 'Zimbabwe'
     };
 
-    var countryListArr = [];
-    var countryIdSelected = '';
-    var countryNameSelected = '';
-    var emptySearch = false;
-    var countryListEl = document.getElementsByClassName('country-selector__list')[0];
-    var countryInput = document.getElementsByClassName('country-selector__input')[0];
-    var currentCountryPos = 0;
-    var countryListId = 0;
+    let countryListArr = [];
+    let countryIdSelected = '';
+    let countryNameSelected = '';
+    let emptySearch = false;
+    let countryListEl = document.getElementsByClassName('country-selector__list')[0];
+    let countryInput = document.getElementsByClassName('country-selector__input')[0];
+    let currentCountryPos = 0;
+    let countryListId = 0;
 
-    for (var key in countries) {
+    for (let key in countries) {
         // skip loop if the property is from prototype
         if (!countries.hasOwnProperty(key)) continue;
 
-        var obj = countries[key];
+        let obj = countries[key];
         countryListArr.push('<li><button type="button" class="btn btn--country" data-item-id="' + countryListId + '" data-country-id="' + key + '" data-country-name="' + obj + '"><span class="btn__text">' + obj + '<span></button></li>');
         countryListId++;
     }
 
-    var timer;
+    let timer;
     // On keyup
     countryInput.addEventListener('keyup', function (e) {
-        var keyCode = e.keyCode;
+        let keys = [37,38,39,40,27,13];
+        let keyCode = e.keyCode;
         // If it is not key up, right, down, left, esc or enter
         // Otherwise it will render the list again
-        if (keyCode !== 37 && keyCode !== 38 && keyCode !== 39 && keyCode !== 40 && keyCode !== 27 && keyCode !== 13) {
-            var inputVal = this.value;
+        if (keys.indexOf(keyCode) >= 0) {
+            let inputVal = this.value;
             window.clearTimeout(timer);
             timer = window.setTimeout(function () {
                 searchFor(countries, inputVal);
@@ -325,16 +326,16 @@
         }, 200);
     });
 
-    var clickOnCountry = function () {
-        var idAttr = this.getAttribute("data-country-id");
-        var nameAttr = this.getAttribute("data-country-name");
+    let clickOnCountry = function () {
+        let idAttr = this.getAttribute("data-country-id");
+        let nameAttr = this.getAttribute("data-country-name");
         countryIdSelected = idAttr;
         countryNameSelected = nameAttr;
         countryInput.value = nameAttr;
     };
 
-    var setActiveCountryItem = function () {
-        var activeCountry = document.getElementsByClassName('btn--country-active')[0];
+    let setActiveCountryItem = function () {
+        let activeCountry = document.getElementsByClassName('btn--country-active')[0];
         // Remove class name for previous active class
         activeCountry.classList.remove('btn--country-active');
         // Add class name
@@ -345,9 +346,9 @@
 
     // If enter key was pressed
     function enterCountry() {
-        var activeCountry = document.getElementsByClassName('btn--country-active')[0];
-        var idAttr = activeCountry.getAttribute("data-country-id");
-        var nameAttr = activeCountry.getAttribute("data-country-name");
+        let activeCountry = document.getElementsByClassName('btn--country-active')[0];
+        let idAttr = activeCountry.getAttribute("data-country-id");
+        let nameAttr = activeCountry.getAttribute("data-country-name");
         // Change apply values
         countryIdSelected = idAttr;
         countryNameSelected = nameAttr;
@@ -370,7 +371,7 @@
     }
     // Focus on first country list item
     function focusFirstCountry() {
-        var countryBtn = document.getElementsByClassName('btn--country');
+        let countryBtn = document.getElementsByClassName('btn--country');
         if (countryBtn.length) {
             countryBtn[0].classList.add('btn--country-active');
             hoverCountryItem();
@@ -378,14 +379,14 @@
     }
     // Hover listener over country list items
     function hoverCountryItem() {
-        var countryBtn = document.getElementsByClassName('btn--country');
+        let countryBtn = document.getElementsByClassName('btn--country');
         for (var i = 0; i < countryBtn.length; i++) {
             countryBtn[i].addEventListener('mouseover', setActiveCountryItem, false);
         }
     }
     // Click on country button event listener
     function countryClick() {
-        var countryBtn = document.getElementsByClassName('btn--country');
+        let countryBtn = document.getElementsByClassName('btn--country');
         for (var i = 0; i < countryBtn.length; i++) {
             countryBtn[i].addEventListener('click', clickOnCountry, false);
         }
@@ -399,11 +400,11 @@
     }
     // Loop through object, find a match and update the country list
     function searchFor(countryObj, searchKey) {
-        var searchArr = [];
+        let searchArr = [];
         searchKey = trimString(searchKey.toLowerCase()); // trim it
 
         if (searchKey.length) {
-            for (var key in countryObj) {
+            for (let key in countryObj) {
                 // skip loop if the property is from prototype
                 if (!countryObj.hasOwnProperty(key)) continue;
 
@@ -443,9 +444,9 @@
     // Key up and down to navigaton
     function navigateUpDown(keyNr) {
         
-        var countryBtn = document.getElementsByClassName('btn--country');
-        var activeCountry = document.getElementsByClassName('btn--country-active')[0];
-        var btnLength = countryBtn.length;
+        let countryBtn = document.getElementsByClassName('btn--country');
+        let activeCountry = document.getElementsByClassName('btn--country-active')[0];
+        let btnLength = countryBtn.length;
 
         if (currentCountryPos >= 0 && btnLength) {
             // Up

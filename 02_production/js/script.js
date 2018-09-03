@@ -255,6 +255,7 @@
     let countryListArr = [];
     let countryIdSelected = '';
     let countryNameSelected = '';
+    let searchArr = [];
     let emptySearch = false;
     let countryListEl = document.getElementsByClassName('country-selector__list')[0];
     let countryInput = document.getElementsByClassName('country-selector__input')[0];
@@ -266,13 +267,13 @@
         if (!countries.hasOwnProperty(key)) continue;
 
         let obj = countries[key];
-        countryListArr.push('<li><button type="button" class="btn btn--country" data-item-id="' + countryListId + '" data-country-id="' + key + '" data-country-name="' + obj + '"><span class="btn__text">' + obj + '<span></button></li>');
+        pushToArray('country', countryListArr, countryListId, key, obj, obj);
         countryListId++;
     }
 
     let timer;
-    // On keyup
-    countryInput.addEventListener('keyup', function (e) {
+    // On key down
+    countryInput.addEventListener('keydown', function (e) {
         let keys = [37,38,39,40,27,13];
         let keyCode = e.keyCode;
         // If it is not key up, right, down, left, esc or enter
@@ -287,17 +288,14 @@
 
         // If key is enter
         if (keyCode === 13) enterCountry();
-
         // If key is esc remove focus from the input field
         if (keyCode === 27) countryInput.blur();
-    });
-    // On keyup
-    countryInput.addEventListener('keydown', function (e) {
-        var keyCode = e.keyCode;
+        // Up
         if (keyCode === 38) {
             navigateUpDown('38');
             e.preventDefault();
         }
+        // Down
         if (keyCode === 40) {
             navigateUpDown('40');
             e.preventDefault();
@@ -400,7 +398,7 @@
     }
     // Loop through object, find a match and update the country list
     function searchFor(countryObj, searchKey) {
-        let searchArr = [];
+        searchArr = [];
         searchKey = trimString(searchKey.toLowerCase()); // trim it
 
         if (searchKey.length) {
@@ -411,7 +409,7 @@
                 var obj = countries[key];
 
                 if (obj.toLowerCase().indexOf(searchKey) !== -1) {
-                    searchArr.push('<li><button type="button" class="btn btn--country" data-item-id="' + countryListId + '" data-country-id="' + key + '" data-country-name="' + obj + '"><span class="btn__text">' + obj + '</span></button></li>');
+                    pushToArray('country', searchArr, countryListId, key, obj, obj);
                     countryListId++;
                 }
             }
@@ -457,8 +455,10 @@
                 activeCountry.classList.remove('btn--country-active');
                 // Add class name
                 countryBtn[currentCountryPos].classList.add('btn--country-active');
-
-                document.getElementsByClassName('btn--country-active')[0].scrollIntoView();
+                // Scroll to view, scrollIntoViewOptions are not supported in Safari, IE
+                // I will need to implement a polyfill
+                // See doc https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+                document.getElementsByClassName('btn--country-active')[0].scrollIntoView({behavior: "smooth", block: "nearest", inline: "nearest"});
             }
             // Down
             if(keyNr === '40' && currentCountryPos < btnLength - 1) {
@@ -468,10 +468,16 @@
                 activeCountry.classList.remove('btn--country-active');
                 // Add class name
                 countryBtn[currentCountryPos].classList.add('btn--country-active');
-
-                document.getElementsByClassName('btn--country-active')[0].scrollIntoView();
+                // Scroll to view, scrollIntoViewOptions are not supported in Safari, IE
+                // I will need to implement a polyfill
+                // See doc https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+                document.getElementsByClassName('btn--country-active')[0].scrollIntoView({behavior: "smooth", block: "nearest", inline: "nearest"});
             }
         }
+    }
+    // Push To Array Function
+    function pushToArray(btnClass, arrayId, itemId, keyId, keyValue, btnText) {
+        arrayId.push('<li><button type="button" class="btn btn--list btn--' + btnClass + '" data-item-id="' + itemId + '" data-country-id="' + keyId + '" data-country-name="' + keyValue + '"><span class="btn__text">' + btnText + '<span></button></li>');
     }
 
     buildAllCountries();
